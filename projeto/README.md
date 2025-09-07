@@ -1,6 +1,6 @@
 # Histórias de Usuário
 
-### Ator: Usuário (geral)  
+### Ator: Usuário (abstrato)  
 - Eu, como Usuário, gostaria de **realizar meu cadastro no sistema** para poder utilizar a plataforma.
 - Eu, como usuário, gostaria de **realizar autenticação no sistema** para acessar as funcionalidades disponíveis ao meu perfil.
 
