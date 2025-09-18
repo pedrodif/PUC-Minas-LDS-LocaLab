@@ -2,6 +2,7 @@ package com.localab.api.Model.Entity;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
@@ -29,6 +30,7 @@ public class Rendimento {
     private Double valor;
     
     @NotNull
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate data;
 
     @ManyToOne(optional = false)
