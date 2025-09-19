@@ -3,6 +3,7 @@ package com.localab.api.Service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.localab.api.DTO.AuthDTO;
 import com.localab.api.DTO.UsuarioDTO;
@@ -13,6 +14,7 @@ import com.localab.api.Repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
+@Service
 public class UserService {
     @Autowired
     private UserRepository repository;
