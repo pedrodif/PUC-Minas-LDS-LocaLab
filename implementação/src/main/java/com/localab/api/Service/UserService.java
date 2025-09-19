@@ -30,26 +30,22 @@ public class UserService {
     public UsuarioDTO getById(Long id) {
         return repository.findById(id)
                 .map(mapper::toDTO)
-                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado com ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Nenhum usuário localizado com ID: " + id));
     }
 
     @Transactional
     public UsuarioDTO create(Usuario usuario) {
-        repository.save(usuario);
-        return mapper.toDTO(usuario);
+        return mapper.toDTO(repository.save(usuario));
     }
 
     @Transactional
     public UsuarioDTO update(Long id, Usuario usuarioAtualizado) {
-        Usuario usuarioRecuperado = repository.findById(id)
+        return repository.findById(id)
                 .map(usuario -> {
                     mapper.updateUsuario(usuarioAtualizado, usuario);
-                    return usuario;
+                    return mapper.toDTO(repository.save(usuario));
                 })
-                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado com ID: " + id));
-
-        repository.save(usuarioRecuperado);
-        return mapper.toDTO(usuarioRecuperado);
+                .orElseThrow(() -> new EntityNotFoundException("Nenhum usuário localizado com ID: " + id));
     }
 
     public String delete(Long id) {
@@ -57,7 +53,7 @@ public class UserService {
                 .ifPresentOrElse(
                         repository::delete,
                         () -> {
-                            throw new EntityNotFoundException("Usuário não encontrado com ID: " + id);
+                            throw new EntityNotFoundException("Nenhum usuário localizado com ID: " + id);
                         });
         return "Usuário deletado com sucesso!";
     }
