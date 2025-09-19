@@ -3,6 +3,7 @@ package com.localab.api.Model.Entity;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.localab.api.Model.Type.UsuarioType;
@@ -16,6 +17,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -56,13 +58,20 @@ public class Usuario {
 
     @ManyToOne(optional = true)
     @JoinColumn(name = "empresa_id")
+    @JsonIgnore
     private Empresa empresa;
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<Rendimento> rendimentos;
 
     @Setter(AccessLevel.NONE)
     @JsonProperty(access = Access.READ_ONLY)
-    @Column(nullable = false, updatable = false, columnDefinition = "DATE DEFAULT CURRENT_DATE")
+    @Column(nullable = false, updatable = false)
     private LocalDate criadoEm;
+
+    @PrePersist
+    protected void onCreate() {
+        this.criadoEm = LocalDate.now();
+    }
 }
