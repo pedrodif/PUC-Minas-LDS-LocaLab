@@ -7,9 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 
+import com.localab.api.Model.Entity.Contrato;
 import com.localab.api.Model.Entity.Empresa;
 import com.localab.api.Model.Entity.Usuario;
+import com.localab.api.Model.Type.FaseAprovacao;
+import com.localab.api.Model.Type.Propriedade;
 import com.localab.api.Model.Type.UsuarioType;
+import com.localab.api.Repository.ContratoRepository;
 import com.localab.api.Repository.EmpresaRepository;
 import com.localab.api.Repository.UserRepository;
 
@@ -22,6 +26,9 @@ public class DatabaseSeederTest {
     
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private ContratoRepository contratoRepository;
     
     @Test
     public void testEmpresasForamCriadas() {
@@ -71,5 +78,33 @@ public class DatabaseSeederTest {
         assertTrue(userRepository.findByEmail("tripa.seca@boracha.com").isPresent());
         assertTrue(userRepository.findByEmail("dick.vigarista@valmorina.com").isPresent());
         assertTrue(userRepository.findByEmail("mutley@valmorina.com").isPresent());
+    }
+    
+    @Test
+    public void testContratosForamCriados() {
+        // Verificar se todos os contratos foram criados
+        assertEquals(6, contratoRepository.count());
+        
+        // Verificar se há contratos com diferentes fases de aprovação
+        assertTrue(contratoRepository.findByFaseAprovacao(FaseAprovacao.APROVADO).size() > 0);
+        assertTrue(contratoRepository.findByFaseAprovacao(FaseAprovacao.AGUARDANDO_FINANCIADOR).size() > 0);
+        assertTrue(contratoRepository.findByFaseAprovacao(FaseAprovacao.AGUARDANDO_LOCADOR).size() > 0);
+        assertTrue(contratoRepository.findByFaseAprovacao(FaseAprovacao.RECUSADO).size() > 0);
+        
+        // Verificar se há contratos com diferentes propriedades
+        assertTrue(contratoRepository.findByPropriedade(Propriedade.BANCO).size() > 0);
+        assertTrue(contratoRepository.findByPropriedade(Propriedade.LOCADORA).size() > 0);
+        assertTrue(contratoRepository.findByPropriedade(Propriedade.CONTRATANTE).size() > 0);
+    }
+    
+    @Test
+    public void testContratosTemRelacionamentos() {
+        // Verificar se todos os contratos têm relacionamentos válidos
+        contratoRepository.findAll().forEach(contrato -> {
+            assertNotNull(contrato.getLocador(), "Contrato deve ter um locador");
+            assertNotNull(contrato.getLocadora(), "Contrato deve ter uma locadora");
+            assertNotNull(contrato.getPropriedade(), "Contrato deve ter uma propriedade definida");
+            assertNotNull(contrato.getFaseAprovacao(), "Contrato deve ter uma fase de aprovação definida");
+        });
     }
 }

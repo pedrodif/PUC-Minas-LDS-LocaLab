@@ -42,6 +42,11 @@ public class Contrato {
     @JoinColumn(name = "locadora_id")
     private Empresa locadora;
     
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "automovel_id")
+    @NotNull
+    private Automovel automovel;
+    
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Propriedade propriedade;
